@@ -1,3 +1,36 @@
+.modal-outer-container {
+  width: 100%;
+  height: 100%;
+}
+
+.modal-middle-container {
+  display: flex;
+  height: 100%;
+  align-items: center;
+}
+
+.modal-inner-container {
+  max-width: 700px;
+  margin: 0 auto;
+  background-color: $secondary;
+  background-clip: padding-box;
+  box-shadow: shadow("modal");
+  padding: 1px;
+  box-sizing: border-box;
+
+  @media screen and (min-width: 475px) {
+    width: auto;
+  }
+
+  .select-kit {
+    width: 220px;
+
+    &.tag-chooser {
+      width: 100%;
+    }
+  }
+}
+
 .modal-open {
   .dropdown-menu {
     z-index: z("modal", "dropdown");
@@ -88,38 +121,6 @@
   }
 }
 
-.modal-outer-container {
-  display: table;
-  table-layout: fixed;
-  width: 100%;
-  height: 100%;
-}
-
-.modal-inner-container {
-  display: table;
-  width: 100%;
-  min-width: 320px;
-  max-width: 700px;
-  margin: 0 auto;
-  background-color: $secondary;
-  background-clip: padding-box;
-  box-shadow: shadow("modal");
-  padding: 1px;
-  box-sizing: border-box;
-
-  @media screen and (min-width: 475px) {
-    min-width: 475px;
-    width: auto;
-  }
-
-  .select-kit {
-    width: 220px;
-
-    &.tag-chooser {
-      width: 100%;
-    }
-  }
-}
 
 .create-account.in .modal-inner-container,
 .login-modal.in .modal-inner-container {
@@ -200,6 +201,7 @@
     width: 100%;
     overflow-y: auto;
     max-height: 400px;
+
     &.full-height-modal {
       max-height: calc(100vh - 150px);
     }
