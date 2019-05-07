@@ -18,8 +18,10 @@ if ENV['RAILS_ENV'] != 'production' && ENV['RAILS_ENV'] != 'profile'
   end
 
   if defined? Bootsnap
+    bootsnap_cache = ENV.fetch('BOOTSNAP_CACHE_DIR', 'tmp/cache')
+
     Bootsnap.setup(
-      cache_dir: 'tmp/cache',     # Path to your cache
+      cache_dir: bootsnap_cache,  # Path to your cache
       load_path_cache: true,      # Should we optimize the LOAD_PATH with a cache?
       autoload_paths_cache: true, # Should we optimize ActiveSupport autoloads with cache?
       disable_trace: false,       # Sets `RubyVM::InstructionSequence.compile_option = { trace_instruction: false }`

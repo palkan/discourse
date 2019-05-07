@@ -1,0 +1,86 @@
+version: '3.4'
+
+services:
+  app: &app
+    build:
+      context: .
+      dockerfile: ./.docker/Dockerfile
+      args:
+        PG_VERSION: '11'
+        NODE_VERSION: '11.8.0'
+        NODE_VERSION_MAJOR: '11'
+    image: discourse-dev:1.0
+    volumes:
+      - .:/app:cached
+    tmpfs:
+      - /tmp
+
+  backend: &backend
+    <<: *app
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/app:cached
+      - rails_cache:/app/tmp/cache
+      - bundle:/bundle
+      - assets:/app/public/assets
+      - temp:/app/tmp
+      - .docker/.bashrc:/root/.bashrc:ro
+      - .docker/.pryrc:/app/.pryrc:ro
+      - .docker/.psqlrc:/root/.psqlrc:ro
+      - postgres_history:/var/log/psql_history
+    environment:
+      - MALLOC_ARENA_MAX=2
+      - RAILS_ENV=${RAILS_ENV:-development}
+      - REDIS_URL=redis://redis:6379/
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432
+      - BOOTSNAP_CACHE_DIR=/bundle/bootsnap
+      - WEB_CONCURRENCY=1
+      - HISTFILE=/bundle/.bash_history
+      - EDITOR=vi
+    depends_on:
+      - postgres
+      - redis
+
+  runner:
+    <<: *backend
+    command: /bin/bash
+    ports:
+      - '3000:3000'
+      - '3002:3002'
+
+  web:
+    <<: *backend
+    command: bundle exec rails server -b 0.0.0.0
+    ports:
+      - '3000:3000'
+
+  sidekiq:
+    <<: *backend
+    command: bundle exec sidekiq -C config/sidekiq.yml
+
+  postgres:
+    image: postgres:11.1
+    volumes:
+      - .docker/.psqlrc:/root/.psqlrc:ro
+      - postgres:/var/lib/postgresql/data
+      - postgres_history:/var/log/psql_history
+    ports:
+      - '15432:5432'
+
+  redis:
+    image: redis:3.2-alpine
+    volumes:
+      - redis:/data
+    ports:
+      - '16379:6379'
+
+volumes:
+  postgres:
+  postgres_history:
+  redis:
+  bundle:
+  rails_cache:
+  assets:
+  bash_history:
+  temp:

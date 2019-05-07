@@ -1,6 +1,7 @@
 development:
   prepared_statements: false
   adapter: postgresql
+  url: <%= ENV["DATABASE_URL"] %>
   database: <%= ENV['DISCOURSE_DEV_DB'] || 'discourse_development' %>
   min_messages: warning
   pool: 5
@@ -19,6 +20,7 @@ development:
 test:
   prepared_statements: false
   adapter: postgresql
+  url: <%= ENV["DATABASE_URL"] %>
   database: <%= ENV["RAILS_DB"] ? ENV["RAILS_DB"] : "discourse_test" %>
   min_messages: warning
   pool: 5

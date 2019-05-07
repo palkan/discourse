@@ -127,3 +127,8 @@ vendor/bundle/*
 
 # Vagrant
 .vagrant
+
+# local .pryrc
+/.pryrc
+.rspec-local
+/test_prof_reports

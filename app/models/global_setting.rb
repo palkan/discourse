@@ -140,19 +140,24 @@ class GlobalSetting
     @config ||=
       begin
         c = {}
-        c[:host] = redis_host if redis_host
-        c[:port] = redis_port if redis_port
+
+        if ENV["REDIS_URL"]
+          c[:url] = ENV["REDIS_URL"]
+        else
+          c[:host] = redis_host if redis_host
+          c[:port] = redis_port if redis_port
+
+          c[:password] = redis_password if redis_password.present?
+          c[:db] = redis_db if redis_db != 0
+          c[:db] = 1 if Rails.env == "test"
+          c[:id] = nil if redis_skip_client_commands
+        end
 
         if redis_slave_host && redis_slave_port
           c[:slave_host] = redis_slave_host
           c[:slave_port] = redis_slave_port
           c[:connector] = DiscourseRedis::Connector
         end
-
-        c[:password] = redis_password if redis_password.present?
-        c[:db] = redis_db if redis_db != 0
-        c[:db] = 1 if Rails.env == "test"
-        c[:id] = nil if redis_skip_client_commands
 
         c.freeze
       end
