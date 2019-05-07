@@ -124,6 +124,7 @@ group :test do
   gem 'minitest', require: false
   gem 'simplecov', require: false
   gem "test-prof"
+  gem 'fuubar', require: false
 end
 
 group :test, :development do

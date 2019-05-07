@@ -48,6 +48,13 @@ require 'shoulda-matchers'
 require 'sidekiq/testing'
 require 'test_prof/recipes/rspec/let_it_be'
 require 'test_prof/before_all/adapters/active_record'
+require 'test_prof/recipes/logging'
+require 'test_prof/recipes/rspec/sample'
+
+TestProf.configure do |config|
+  # the directory to put artifacts (reports) in ('tmp/test_prof' by default)
+  config.output_dir = 'test_prof_reports'
+end
 
 # The shoulda-matchers gem no longer detects the test framework
 # you're using or mixes itself into that framework automatically.
@@ -173,6 +180,14 @@ RSpec.configure do |config|
   # automatically. This will be the default behavior in future versions of
   # rspec-rails.
   config.infer_base_class_for_anonymous_controllers = true
+
+  config.define_derived_metadata(file_path: %r{/spec/}) do |metadata|
+    # do not overwrite type if it's already set
+    next if metadata.key?(:type)
+
+    match = metadata[:location].match(%r{/spec/([^/]+)/})
+    metadata[:type] = match[1].singularize.to_sym
+  end
 
   config.before(:suite) do
     Sidekiq.error_handlers.clear
