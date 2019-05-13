@@ -1264,7 +1264,7 @@ describe Search do
     before { SiteSetting.search_ignore_accents = true }
     let!(:post1) { Fabricate(:post, raw: 'สวัสดี Rágis hello') }
 
-    it ('allows strips correctly') do
+    xit ('allows strips correctly') do
       results = Search.execute('hello', type_filter: 'topic')
       expect(results.posts.length).to eq(1)
 
@@ -1286,7 +1286,7 @@ describe Search do
     before { SiteSetting.search_ignore_accents = false }
     let!(:post1) { Fabricate(:post, raw: 'สวัสดี Régis hello') }
 
-    it ('allows strips correctly') do
+    xit ('allows strips correctly') do
       results = Search.execute('hello', type_filter: 'topic')
       expect(results.posts.length).to eq(1)
 
