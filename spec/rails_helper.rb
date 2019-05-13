@@ -56,6 +56,17 @@ TestProf.configure do |config|
   config.output_dir = 'test_prof_reports'
 end
 
+TestProf::EventProf::CustomEvents.register("sql.pg") do
+  MethodProfiler.ensure_discourse_instrumentation!
+
+  TestProf::EventProf.monitor(
+    PG::Connection,
+    "sql.pg",
+    :exec, :async_exec, :exec_prepared,
+    :send_query_prepared, :query, :exec_params
+  )
+end
+
 # The shoulda-matchers gem no longer detects the test framework
 # you're using or mixes itself into that framework automatically.
 Shoulda::Matchers.configure do |config|
